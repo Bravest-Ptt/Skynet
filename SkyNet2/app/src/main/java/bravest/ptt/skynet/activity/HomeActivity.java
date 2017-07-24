@@ -1,8 +1,11 @@
-package bravest.ptt.skynet;
+package bravest.ptt.skynet.activity;
 
+import android.content.Intent;
+import android.net.VpnService;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,13 +16,23 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import bravest.ptt.skynet.R;
+import bravest.ptt.skynet.core.service.SkyNetVpnService;
+
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final String TAG = "HomeActivity";
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        initVariables();
+        initViews();
+    }
+
+    private void initViews() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -27,8 +40,8 @@ public class HomeActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                startSkyNet();
+                Snackbar.make(view, "Sky Net Started", Snackbar.LENGTH_LONG).show();
             }
         });
 
@@ -40,6 +53,9 @@ public class HomeActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void initVariables() {
     }
 
     @Override
@@ -97,5 +113,26 @@ public class HomeActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    //A method for start the vpn service
+    private void startSkyNet() {
+        Intent intent = VpnService.prepare(this);
+        if (intent != null) {
+            startActivityForResult(intent, 0);
+        } else {
+            onActivityResult(0, RESULT_OK, null);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0) {
+            if (resultCode == RESULT_OK) {
+                Log.d(TAG, "onActivityResult: ");
+                Intent intent = new Intent(this, SkyNetVpnService.class);
+                startService(intent);
+            }
+        }
     }
 }

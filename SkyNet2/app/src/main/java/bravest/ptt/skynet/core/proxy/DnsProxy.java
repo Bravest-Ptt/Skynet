@@ -293,7 +293,7 @@ public class DnsProxy implements Runnable {
     }
 
     /**
-     * 清楚超时的查询
+     * 清除超时的查询
      */
     private void clearExpiredQueries() {
         long now = System.nanoTime();

@@ -29,6 +29,7 @@ import bravest.ptt.skynet.core.tcpip.TCPHeader;
 import bravest.ptt.skynet.core.tcpip.UDPHeader;
 import bravest.ptt.skynet.core.util.VpnServiceHelper;
 import bravest.ptt.skynet.event.VPNEvent;
+import bravest.ptt.skynet.filter.AdsFilter;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -287,7 +288,7 @@ public class SkyNetVpnService extends VpnService implements Runnable {
             * ProxyConfig need an instance of DomainFilter,
             * you should set an DomainFilter object by call the setDomainFilter() method
             * */
-            //ProxyConfig.Instance.setDomainFilter(new BlackListFilter());
+            ProxyConfig.Instance.setDomainFilter(new AdsFilter());
             //ProxyConfig.Instance.setBlockingInfoBuilder(new HtmlBlockingInfoBuilder());
             ProxyConfig.Instance.prepare();
 

@@ -261,7 +261,7 @@ public class SkyNetVpnService extends VpnService implements Runnable {
             String value = (String) method.invoke(null, name);
             if (value != null && !"".equals(value) && !servers.contains(value)) {
                 servers.add(value);
-                builder.addRoute(value, 32); //添加路由，使得DNS查询流量也走该VPN接口
+                builder.addRoute(value, 32); //添加路由，使得DNS查询流量也走该VPN接口 所有流量都走
 
                 Log.i(TAG, "dns name = "+ name + ", value = " + value);
             }

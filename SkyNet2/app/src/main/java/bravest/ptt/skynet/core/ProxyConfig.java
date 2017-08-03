@@ -1,15 +1,19 @@
 package bravest.ptt.skynet.core;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
+import bravest.ptt.skynet.app.App;
 import bravest.ptt.skynet.core.builder.BlockingInfoBuilder;
 import bravest.ptt.skynet.core.builder.DefaultBlockingInfoBuilder;
 import bravest.ptt.skynet.core.filter.DomainFilter;
 import bravest.ptt.skynet.core.tcpip.CommonMethods;
+import bravest.ptt.skynet.db.SkyNetDbUtils;
 
 public class ProxyConfig {
 
@@ -32,11 +36,14 @@ public class ProxyConfig {
 	BlockingInfoBuilder mBlockingInfoBuilder;
 	private VpnStatusListener mVpnStatusListener;
 
+    private ContentResolver mResolver;
+
 	public ProxyConfig() {
 		mIpList = new ArrayList<>();
 		mDnsList = new ArrayList<>();
 		mRouteList = new ArrayList<>();
 
+        mResolver = App.getInstance().getContentResolver();
 //		mDomainMap = new HashMap<>();
 //		mDomainFilter = new BlackListFilter();
 	}
@@ -99,7 +106,15 @@ public class ProxyConfig {
 	public boolean needProxy(String host, int ip) {
 		boolean filter = mDomainFilter != null && mDomainFilter.needFilter(host, ip);
 		Log.i(TAG, String.format("host %s ip %s %s", host, CommonMethods.ipIntToString(ip), filter));
-		return filter || isFakeIP(ip);
+        boolean needProxy = filter || isFakeIP(ip);
+		if (needProxy) {
+            ContentValues values = new ContentValues();
+            values.put(SkyNetDbUtils.FilterHistory.DATE, System.currentTimeMillis());
+            values.put(SkyNetDbUtils.FilterHistory.DOMAIN, host);
+            values.put(SkyNetDbUtils.FilterHistory.IP, CommonMethods.ipIntToString(ip));
+            mResolver.insert(SkyNetDbUtils.FilterHistory.CONTENT_URI, values);
+        }
+		return needProxy;
 	}
 
 	public void setBlockingInfoBuilder(BlockingInfoBuilder blockingInfoBuilder) {

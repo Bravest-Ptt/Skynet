@@ -22,4 +22,8 @@
     <color name="teal_a200">#64ffda</color>
     <color name="teal_a400">#1de9b6</color>
     <color name="teal_a700">#00bfa5</color>
+
+    <color name = "rippelColor" >#0099CC</color >
+    <color name = "colorBtnGreen" >#0dc3e4</color >
+    <color name = "colorBtnRed" >#fb0009</color >
 </resources>

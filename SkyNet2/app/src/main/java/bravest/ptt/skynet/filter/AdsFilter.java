@@ -76,13 +76,13 @@ public class AdsFilter implements DomainFilter {
         }
 
         boolean filter = false;
-        if (mIpMask.get(ip, -1) == 1) {
-            filter = true;
-        }
-        if (Pattern.matches("\\d+\\.\\d+\\.\\d+\\.\\d+", domain.trim())) {
-            int newIp = CommonMethods.ipStringToInt(domain.trim());
-            filter = filter || (mIpMask.get(newIp, -1) == 1);
-        }
+//        if (mIpMask.get(ip, -1) == 1) {
+//            filter = true;
+//        }
+//        if (Pattern.matches("\\d+\\.\\d+\\.\\d+\\.\\d+", domain.trim())) {
+//            int newIp = CommonMethods.ipStringToInt(domain.trim());
+//            filter = filter || (mIpMask.get(newIp, -1) == 1);
+//        }
         String key = domain.trim();
         if (mDomainMap.containsKey(key)) {
             filter = true;

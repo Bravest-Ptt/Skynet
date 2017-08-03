@@ -33,6 +33,9 @@
                 <action android:name="android.net.VpnService" />
             </intent-filter>
         </service>
+        <provider
+            android:name=".db.SkyNetProvider"
+            android:authorities="bravest.ptt.skynet" />
     </application>
 
 </manifest>

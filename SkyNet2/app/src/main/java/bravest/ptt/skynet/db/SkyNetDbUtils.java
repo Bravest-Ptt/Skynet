@@ -22,4 +22,19 @@ public class SkyNetDbUtils {
         String DOMAIN = "domain";
         String IP = "ip";
     }
+
+    public interface History extends BaseColumns {
+        String TABLE_NAME = "history";
+        Uri CONTENT_URI = Uri.parse("content://bravest.ptt.skynet/history");
+        String DATE = "date";
+        String DOMAIN = "domain";
+        String IP = "ip";
+    }
+
+    public interface BlackList extends BaseColumns {
+        String TABLE_NAME = "black_list";
+        Uri CONTENT_URI = Uri.parse("content://bravest.ptt.skynet/black_list");
+        String DATE = "date";
+        String DOMAIN = "domain";
+    }
 }

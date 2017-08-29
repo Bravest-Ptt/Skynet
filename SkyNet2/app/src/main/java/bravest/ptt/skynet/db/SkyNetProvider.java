@@ -28,6 +28,10 @@ public class SkyNetProvider extends ContentProvider {
     static {
         sUriMatcher.addURI(PACKAGE_NAME, "filter_history", 1);
         sUriMatcher.addURI(PACKAGE_NAME, "filter_history/#", 2);
+        sUriMatcher.addURI(PACKAGE_NAME, "history", 3);
+        sUriMatcher.addURI(PACKAGE_NAME, "history/#", 4);
+        sUriMatcher.addURI(PACKAGE_NAME, "black_list", 5);
+        sUriMatcher.addURI(PACKAGE_NAME, "black_list/#", 6);
     }
 
     private void getDatabaseHelper() {
@@ -62,6 +66,22 @@ public class SkyNetProvider extends ContentProvider {
                 sqliteQueryBuilder.appendWhere("_id=");
                 sqliteQueryBuilder.appendWhere(uri.getLastPathSegment());
                 break;
+            case 3:
+                sqliteQueryBuilder.setTables("history");
+                break;
+            case 4:
+                sqliteQueryBuilder.setTables("history");
+                sqliteQueryBuilder.appendWhere("_id=");
+                sqliteQueryBuilder.appendWhere(uri.getLastPathSegment());
+                break;
+            case 5:
+                sqliteQueryBuilder.setTables("black_list");
+                break;
+            case 6:
+                sqliteQueryBuilder.setTables("black_list");
+                sqliteQueryBuilder.appendWhere("_id=");
+                sqliteQueryBuilder.appendWhere(uri.getLastPathSegment());
+                break;
             default:
                 throw new IllegalArgumentException("Unknown uri " + uri);
         }
@@ -83,6 +103,14 @@ public class SkyNetProvider extends ContentProvider {
                 return "vnd.android.cursor.dir/filter_history";
             case 2:
                 return "vnd.android.cursor.item/filter_history";
+            case 3:
+                return "vnd.android.cursor.dir/history";
+            case 4:
+                return "vnd.android.cursor.item/history";
+            case 5:
+                return "vnd.android.cursor.dir/black_list";
+            case 6:
+                return "vnd.android.cursor.item/black_list";
             default:
                 throw new IllegalArgumentException("Unknown URI");
         }
@@ -102,6 +130,14 @@ public class SkyNetProvider extends ContentProvider {
             case 1:
             case 2:
                 rowId = db.insert("filter_history", null, values);
+                break;
+            case 3:
+            case 4:
+                rowId = db.insert("history", null, values);
+                break;
+            case 5:
+            case 6:
+                rowId = db.insert("black_list", null, values);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URL");
@@ -126,6 +162,18 @@ public class SkyNetProvider extends ContentProvider {
             case 2:
                 affectedRows = db.delete("filter_history", "_id=" + uri.getLastPathSegment() + " AND ( " + where + " )", whereArgs);
                 break;
+            case 3:
+                affectedRows = db.delete("history", where, whereArgs);
+                break;
+            case 4:
+                affectedRows = db.delete("history", "_id=" + uri.getLastPathSegment() + " AND ( " + where + " )", whereArgs);
+                break;
+            case 5:
+                affectedRows = db.delete("black_list", where, whereArgs);
+                break;
+            case 6:
+                affectedRows = db.delete("black_list", "_id=" + uri.getLastPathSegment() + " AND ( " + where + " )", whereArgs);
+                break;
             default:
                 throw new IllegalArgumentException("Cannot delete from URI: " + uri);
         }
@@ -145,6 +193,18 @@ public class SkyNetProvider extends ContentProvider {
                 break;
             case 2:
                 affectedRows = db.update("filter_history", values, "_id" + uri.getLastPathSegment(), null);
+                break;
+            case 3:
+                affectedRows = db.update("history", values, where, whereArgs);
+                break;
+            case 4:
+                affectedRows = db.update("history", values, "_id" + uri.getLastPathSegment(), null);
+                break;
+            case 5:
+                affectedRows = db.update("black_list", values, where, whereArgs);
+                break;
+            case 6:
+                affectedRows = db.update("black_list", values, "_id" + uri.getLastPathSegment(), null);
                 break;
             default:
                 throw new UnsupportedOperationException("Cannot update URI: " + uri);

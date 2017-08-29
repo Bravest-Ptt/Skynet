@@ -24,6 +24,17 @@ public class SkyNetDBHelper extends SQLiteOpenHelper {
                 "date TimeStamp NOT NULL DEFAULT (datetime(CURRENT_TIMESTAMP,'localtime'))," +
                 "domain TEXT NOT NULL," +
                 "ip TEXT);");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS history (" +
+                "_id INTEGER PRIMARY KEY," +
+                "date TimeStamp NOT NULL DEFAULT (datetime(CURRENT_TIMESTAMP,'localtime'))," +
+                "domain TEXT NOT NULL," +
+                "ip TEXT);");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS black_list (" +
+                "_id INTEGER PRIMARY KEY," +
+                "date TimeStamp NOT NULL DEFAULT (datetime(CURRENT_TIMESTAMP,'localtime'))," +
+                "domain TEXT NOT NULL);");
     }
 
     @Override

@@ -10,6 +10,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentContainer;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -24,6 +27,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.HashMap;
+
 import bravest.ptt.skynet.R;
 import bravest.ptt.skynet.animation.SupportAnimator;
 import bravest.ptt.skynet.animation.ViewAnimationUtils;
@@ -32,6 +37,10 @@ import bravest.ptt.skynet.core.util.VpnServiceHelper;
 import bravest.ptt.skynet.db.SkyNetDbUtils;
 import bravest.ptt.skynet.db.observer.FilterHistoryObserver;
 import bravest.ptt.skynet.event.VPNEvent;
+import bravest.ptt.skynet.fragment.BaseFragment;
+import bravest.ptt.skynet.fragment.BlackListFragment;
+import bravest.ptt.skynet.fragment.HistoryFragment;
+import bravest.ptt.skynet.fragment.MainFragment;
 import bravest.ptt.skynet.view.RippleBackground;
 import de.greenrobot.event.EventBus;
 
@@ -42,54 +51,26 @@ public class HomeActivity extends AppCompatActivity
 
     private static final String TAG = "HomeActivity";
 
-    private FilterHistoryObserver mFilterHistoryObserver;
+    private MainFragment mMainFragment;
 
-    private TextView mVpnSwitch;
-    private RippleBackground mRippleView;
-    private TextView mFilterCountText;
+    private BaseFragment mCurrentFragment;
 
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case FilterHistoryObserver.WHAT_FILTER_HISTORY_CHANGED:
-                    if (mFilterCountText != null) {
-                        mFilterCountText.setText(String.valueOf(msg.arg1));
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
+    private HistoryFragment mHistoryFragment;
+
+    private BlackListFragment mBlackListFragment;
+
+    private FragmentManager mFragmentManager;
+
+    private HashMap<Integer, BaseFragment> mFragmentMap;
+
+    public Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        initVariables();
         initViews();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        EventBus.getDefault().registerSticky(this);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        EventBus.getDefault().unregister(this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mFilterHistoryObserver != null) {
-            getContentResolver().unregisterContentObserver(mFilterHistoryObserver);
-        }
+        initData();
     }
 
     private void initViews() {
@@ -105,38 +86,82 @@ public class HomeActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        mVpnSwitch = (TextView) findViewById(R.id.start_vpn_service);
-        mVpnSwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean currentStatus = VpnServiceHelper.vpnRunningStatus();
-                if (currentStatus) { //如果是关闭操作，立即更新界面
-                    changeButtonStatus(false);
-                } else {
-                    Snackbar.make(v, "Sky Net Started", Snackbar.LENGTH_LONG).show();
-                }
-                VpnServiceHelper.changeVpnRunningStatus(HomeActivity.this, !currentStatus);
-            }
-        });
+        mToolbar = toolbar;
 
-        mRippleView = (RippleBackground) findViewById(R.id.rippleView);
-        mFilterCountText = (TextView) findViewById(R.id.filter_count);
-        initFilterCount();
+        initFragments();
     }
 
-    private void initFilterCount() {
-        Cursor cursor = getContentResolver()
-                .query(SkyNetDbUtils.FilterHistory.CONTENT_URI, null, null, null, null);
-        if (cursor != null) {
-            mFilterCountText.setText(String.valueOf(cursor.getCount()));
-            cursor.close();
+    private void initData() {
+
+    }
+
+    private void initFragments() {
+        //Init fragment
+        mFragmentManager = getSupportFragmentManager();
+        mFragmentMap = new HashMap<>();
+
+        mMainFragment = new MainFragment();
+        mHistoryFragment = new HistoryFragment();
+        mBlackListFragment = new BlackListFragment();
+
+        mFragmentMap.put(R.id.nav_home, mMainFragment);
+        mFragmentMap.put(R.id.nav_history, mHistoryFragment);
+        mFragmentMap.put(R.id.nav_blacklist, mBlackListFragment);
+        //set default fragment
+        setFragment(R.id.nav_home);
+    }
+
+    private void setFragment(int id) {
+        BaseFragment current = mFragmentMap.get(id);
+        invalidateOptionsMenu();
+        if (current == null) {
+            return;
         }
+
+        //One fragment transaction @method commit can not be used twice, it will cause "commit already called".
+        FragmentTransaction transaction = mFragmentManager.beginTransaction();
+        transaction.replace(R.id.content_view, current);
+        mCurrentFragment = current;
+        transaction.commit();
     }
 
-    private void initVariables() {
-        mFilterHistoryObserver = new FilterHistoryObserver(this, mHandler);
-        Uri uri = SkyNetDbUtils.FilterHistory.CONTENT_URI;
-        getContentResolver().registerContentObserver(uri, false, mFilterHistoryObserver);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.home, menu);
+        Log.d(TAG, "onCreateOptionsMenu: ");
+        return true;
+    }
+
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        Log.d(TAG, "onPrepareOptionsMenu: ");
+        if (mCurrentFragment instanceof MainFragment) {
+            menu.findItem(R.id.action_filter).setVisible(false);
+            menu.findItem(R.id.action_add).setVisible(false);
+            menu.findItem(R.id.action_remove).setVisible(false);
+        } else if (mCurrentFragment instanceof HistoryFragment) {
+            menu.findItem(R.id.action_filter).setVisible(true);
+            menu.findItem(R.id.action_add).setVisible(false);
+            menu.findItem(R.id.action_remove).setVisible(false);
+        } else if (mCurrentFragment instanceof BlackListFragment) {
+            menu.findItem(R.id.action_filter).setVisible(false);
+            menu.findItem(R.id.action_add).setVisible(true);
+            menu.findItem(R.id.action_remove).setVisible(true);
+        }
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        mCurrentFragment.onMenuSelected(id);
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -149,39 +174,13 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_ad_filter) {
-            // Handle the camera action
-        } else if (id == R.id.nav_data_show) {
-
-        }
+        setFragment(id);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -195,31 +194,10 @@ public class HomeActivity extends AppCompatActivity
                 VpnServiceHelper.startVpnService(this);
             } else {
                 Log.d(TAG, "you refuse the request");
-                changeButtonStatus(false);
+                if (mMainFragment != null) mMainFragment.changeButtonStatus(false);
             }
             return;
         }
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @SuppressWarnings("unused")
-    public void onEventMainThread(VPNEvent event) {
-        boolean selected = event.isEstablished();
-
-        switch (event.getStatus()) {
-            case STARTING:
-                Toast.makeText(this, "Starting...", Toast.LENGTH_LONG).show();
-                break;
-            default:
-                changeButtonStatus(selected);
-                break;
-        }
-
-    }
-
-    private void changeButtonStatus(boolean isRunning) {
-        mRippleView.setSelected(isRunning);
-        mVpnSwitch.setSelected(isRunning);
-        mVpnSwitch.setText(isRunning ? "Close" : "Start");
     }
 }

@@ -6,9 +6,6 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-/**
- * Created by zengzheying on 15/12/28.
- */
 public class CommonMethods {
 
     private static final String TAG = "CommonMethods";

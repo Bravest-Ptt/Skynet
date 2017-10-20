@@ -15,10 +15,6 @@ import bravest.ptt.skynet.R;
 import bravest.ptt.skynet.adapter.entity.Record;
 import bravest.ptt.skynet.adapter.holder.DomainHolder;
 
-/**
- * Created by 123 on 2017/8/30.
- */
-
 public class DomainAdapter extends MultiChoiceAdapter<DomainHolder> {
 
     private ArrayList<Record> mList;

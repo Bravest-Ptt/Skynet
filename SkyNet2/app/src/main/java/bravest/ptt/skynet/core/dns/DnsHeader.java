@@ -4,9 +4,6 @@ import java.nio.ByteBuffer;
 
 import bravest.ptt.skynet.core.tcpip.CommonMethods;
 
-/**
- * Created by zengzheying on 15/12/29.
- */
 public class DnsHeader {
 
     /**

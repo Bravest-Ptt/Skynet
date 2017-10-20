@@ -5,6 +5,7 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.net.VpnService;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -36,6 +37,7 @@ import bravest.ptt.skynet.core.service.SkyNetVpnService;
 import bravest.ptt.skynet.core.util.VpnServiceHelper;
 import bravest.ptt.skynet.db.SkyNetDbUtils;
 import bravest.ptt.skynet.db.observer.FilterHistoryObserver;
+import bravest.ptt.skynet.event.SelectEvent;
 import bravest.ptt.skynet.event.VPNEvent;
 import bravest.ptt.skynet.fragment.BaseFragment;
 import bravest.ptt.skynet.fragment.BlackListFragment;
@@ -146,22 +148,41 @@ public class HomeActivity extends AppCompatActivity
             menu.findItem(R.id.action_add).setVisible(false);
             menu.findItem(R.id.action_remove).setVisible(false);
         } else if (mCurrentFragment instanceof BlackListFragment) {
+            if (mBlackListFragment.isSelected()) {
+                menu.findItem(R.id.action_add).setVisible(false);
+                menu.findItem(R.id.action_remove).setVisible(true);
+            } else {
+                menu.findItem(R.id.action_add).setVisible(true);
+                menu.findItem(R.id.action_remove).setVisible(false);
+            }
             menu.findItem(R.id.action_filter).setVisible(false);
-            menu.findItem(R.id.action_add).setVisible(true);
-            menu.findItem(R.id.action_remove).setVisible(true);
         }
 
         return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().registerSticky(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         mCurrentFragment.onMenuSelected(id);
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setToolbarTitle(int strId) {
+        //Toolbar
+        mToolbar.setTitle(getString(strId));
     }
 
     @Override
@@ -177,11 +198,20 @@ public class HomeActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         setFragment(id);
-
+        switch (id) {
+            case R.id.nav_home:
+                setToolbarTitle(R.string.app_name);
+                break;
+            case R.id.nav_history:
+                setToolbarTitle(R.string.history);
+                break;
+            case R.id.nav_blacklist:
+                setToolbarTitle(R.string.blacklist);
+                break;
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -199,5 +229,10 @@ public class HomeActivity extends AppCompatActivity
             return;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @SuppressWarnings("unused")
+    public void onEventMainThread(SelectEvent event) {
+        invalidateOptionsMenu();
     }
 }

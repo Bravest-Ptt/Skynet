@@ -8,10 +8,6 @@ import android.os.Message;
 
 import bravest.ptt.skynet.db.SkyNetDbUtils;
 
-/**
- * Created by pengtian on 2017/8/3.
- */
-
 public class FilterHistoryObserver extends ContentObserver {
     public static final int WHAT_FILTER_HISTORY_CHANGED = 1;
 

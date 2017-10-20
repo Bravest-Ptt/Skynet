@@ -4,9 +4,6 @@ import android.view.animation.Interpolator;
 
 import java.lang.ref.WeakReference;
 
-/**
- * Created by zengzheying on 15/7/10.
- */
 public abstract class SupportAnimator {
 
 	WeakReference<RevealAnimator> mTarget;

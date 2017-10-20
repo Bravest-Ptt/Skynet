@@ -11,9 +11,6 @@ import bravest.ptt.skynet.core.service.SkyNetVpnService;
 import bravest.ptt.skynet.core.tcpip.IPHeader;
 import bravest.ptt.skynet.core.tcpip.UDPHeader;
 
-/**
- * Created by zengzheying on 16/1/12.
- */
 public class VpnServiceHelper {
 
 	public static final int START_VPN_SERVICE_REQUEST_CODE = 2015;

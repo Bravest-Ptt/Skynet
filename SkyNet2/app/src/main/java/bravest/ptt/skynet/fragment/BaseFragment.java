@@ -9,10 +9,6 @@ import android.view.ViewGroup;
 
 import bravest.ptt.skynet.listener.MenuListener;
 
-/**
- * Created by 123 on 2017/8/29.
- */
-
 public abstract class BaseFragment extends Fragment implements MenuListener{
 
     private View mView;

@@ -3,10 +3,6 @@ package bravest.ptt.skynet.db;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-/**
- * Created by root on 1/4/17.
- */
-
 public class SkyNetDbUtils {
 
     private static final String AUTHORITY = "bravest.ptt.skynet";

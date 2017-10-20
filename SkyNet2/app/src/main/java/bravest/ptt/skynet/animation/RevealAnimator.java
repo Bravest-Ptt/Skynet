@@ -10,9 +10,6 @@ import com.nineoldandroids.util.FloatProperty;
 
 import java.lang.ref.WeakReference;
 
-/**
- * Created by zengzheying on 15/7/10.
- */
 public interface RevealAnimator {
 
 	RevealRadius CLIP_RADIUS = new RevealRadius();

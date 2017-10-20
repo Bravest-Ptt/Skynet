@@ -6,9 +6,6 @@ import com.nineoldandroids.animation.Animator;
 
 import java.lang.ref.WeakReference;
 
-/**
- * Created by zengzheying on 15/7/10.
- */
 public class SupportAnimatorPreL extends SupportAnimator {
 
 	WeakReference<Animator> mAnimator;

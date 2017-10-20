@@ -7,7 +7,6 @@ import bravest.ptt.skynet.core.proxy.DnsProxy;
 import bravest.ptt.skynet.core.tcpip.CommonMethods;
 
 /**
- * Created by zengzheying on 15/12/29.
  * NAT管理对象
  */
 public class NatSessionManager {

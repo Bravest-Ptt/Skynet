@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">天网</string>
+    <string name="app_name">天网广告拦截</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -8,4 +8,6 @@
     <string name="action_filter">筛选</string>
     <string name="action_add">添加</string>
     <string name="action_remove">删除</string>
+    <string name="history">访问历史</string>
+    <string name="blacklist">拦截黑名单</string>
 </resources>

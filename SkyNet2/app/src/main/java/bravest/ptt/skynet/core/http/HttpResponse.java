@@ -12,9 +12,6 @@ import java.util.Set;
 import bravest.ptt.skynet.utils.Compressor;
 import bravest.ptt.skynet.utils.CompressorFactory;
 
-/**
- * Created by zengzheying on 15/12/31.
- */
 public class HttpResponse {
 
     public static final String KEY_CONTENT_TYPE = "Content-Type";

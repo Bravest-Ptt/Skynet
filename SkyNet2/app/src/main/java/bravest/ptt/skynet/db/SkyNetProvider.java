@@ -13,10 +13,6 @@ import android.util.Log;
 
 import static bravest.ptt.skynet.db.SkyNetDbUtils.DATABASE_NAME;
 
-/**
- * Created by root on 1/4/17.
- */
-
 public class SkyNetProvider extends ContentProvider {
 
     private static final String TAG = "SkyNetProvider";

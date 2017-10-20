@@ -8,9 +8,6 @@ import com.nineoldandroids.animation.ObjectAnimator;
 
 import java.lang.ref.WeakReference;
 
-/**
- * Created by zengzheying on 15/7/10.
- */
 public class ViewAnimationUtils {
 
 //    private final static boolean LOLLIPOP_PLUS = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;

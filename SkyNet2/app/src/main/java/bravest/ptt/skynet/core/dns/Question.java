@@ -2,9 +2,6 @@ package bravest.ptt.skynet.core.dns;
 
 import java.nio.ByteBuffer;
 
-/**
- * Created by zengzheying on 15/12/29.
- */
 public class Question {
 
     /**

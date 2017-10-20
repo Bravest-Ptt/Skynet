@@ -1,8 +1,5 @@
 package bravest.ptt.skynet.core.tcpip;
 
-/**
- * Created by zengzheying on 15/12/28.
- */
 public class TCPHeader {
 
 

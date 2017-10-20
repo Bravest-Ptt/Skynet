@@ -6,9 +6,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 
-/**
- * Created by zengzheying on 15/12/30.
- */
 public class RawTunnel extends Tunnel {
 
 	public RawTunnel(SocketChannel innerChannel, Selector selector) {

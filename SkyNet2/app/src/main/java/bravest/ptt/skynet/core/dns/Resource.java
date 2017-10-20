@@ -2,9 +2,6 @@ package bravest.ptt.skynet.core.dns;
 
 import java.nio.ByteBuffer;
 
-/**
- * Created by zengzheying on 15/12/29.
- */
 public class Resource {
     /**
      * 资源记录（RR）：回答字段，授权字段和附加信息字段（额外信息）均采用这种格式

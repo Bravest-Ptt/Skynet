@@ -7,9 +7,6 @@ import android.view.animation.Interpolator;
 
 import java.lang.ref.WeakReference;
 
-/**
- * Created by zengzheying on 15/7/10.
- */
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class SupportAnimatorLollipop extends SupportAnimator {
 

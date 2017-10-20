@@ -8,9 +8,6 @@ import java.util.Locale;
 import bravest.ptt.skynet.core.nat.NatSession;
 import bravest.ptt.skynet.core.tcpip.CommonMethods;
 
-/**
- * Created by zengzheying on 15/12/30.
- */
 public class HttpRequestHeaderParser {
 
     private static final String TAG = "HttpRequestHeaderParser";

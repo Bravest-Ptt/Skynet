@@ -12,9 +12,6 @@ import java.util.regex.Pattern;
 
 import bravest.ptt.skynet.core.tcpip.CommonMethods;
 
-/**
- * Created by zengzheying on 16/1/5.
- */
 public class URL {
 
     private static Pattern typeprog = Pattern.compile("^([^/:]+):.*");

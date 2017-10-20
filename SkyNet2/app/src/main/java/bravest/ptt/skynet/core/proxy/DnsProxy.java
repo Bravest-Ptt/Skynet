@@ -21,7 +21,6 @@ import bravest.ptt.skynet.core.tcpip.UDPHeader;
 import bravest.ptt.skynet.core.util.VpnServiceHelper;
 
 /**
- * Created by zengzheying on 15/12/29.
  * DNS代理
  */
 public class DnsProxy implements Runnable {

@@ -1,5 +1,10 @@
 package bravest.ptt.skynet.fragment;
 
+import android.content.DialogInterface;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.davidecirillo.multichoicerecyclerview.MultiChoiceRecyclerView;
@@ -13,6 +18,9 @@ import bravest.ptt.skynet.activity.HomeActivity;
 import bravest.ptt.skynet.adapter.DomainAdapter;
 import bravest.ptt.skynet.adapter.entity.Record;
 import bravest.ptt.skynet.app.App;
+import bravest.ptt.skynet.event.SelectEvent;
+import bravest.ptt.skynet.utils.SkyNetUtils;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by 123 on 2017/8/29.
@@ -20,6 +28,8 @@ import bravest.ptt.skynet.app.App;
 
 public class BlackListFragment extends BaseFragment {
     MultiChoiceRecyclerView mMultiChoiceRecyclerView;
+
+    private boolean mSelected = false;
 
     private ArrayList<Record> mData = new ArrayList<>();
 
@@ -84,22 +94,37 @@ public class BlackListFragment extends BaseFragment {
         mMultiChoiceRecyclerView.setMultiChoiceSelectionListener(new MultiChoiceSelectionListener() {
             @Override
             public void OnItemSelected(int selectedPosition, int itemSelectedCount, int allItemCount) {
-                
+                if (itemSelectedCount > 0) {
+                    mSelected = true;
+                    EventBus.getDefault().post(new SelectEvent(SelectEvent.Status.SELECTED));
+                }
             }
 
             @Override
             public void OnItemDeselected(int deselectedPosition, int itemSelectedCount, int allItemCount) {
-
+                if (itemSelectedCount <= 0) {
+                    mSelected = false;
+                    EventBus.getDefault().post(new SelectEvent(SelectEvent.Status.UNSELECTED));
+                }
             }
 
             @Override
             public void OnSelectAll(int itemSelectedCount, int allItemCount) {
-
+                if (itemSelectedCount > 0) {
+                    mSelected = true;
+                    EventBus.getDefault().post(new SelectEvent(SelectEvent.Status.SELECTED));
+                } else {
+                    mSelected = false;
+                    EventBus.getDefault().post(new SelectEvent(SelectEvent.Status.UNSELECTED));
+                }
             }
 
             @Override
             public void OnDeselectAll(int itemSelectedCount, int allItemCount) {
-
+                if (itemSelectedCount <= 0) {
+                    mSelected = false;
+                    EventBus.getDefault().post(new SelectEvent(SelectEvent.Status.UNSELECTED));
+                }
             }
         });
     }
@@ -107,9 +132,40 @@ public class BlackListFragment extends BaseFragment {
     @Override
     public void onMenuSelected(int id) {
         if (id == R.id.action_add) {
-            Toast.makeText(getActivity(), "add", Toast.LENGTH_SHORT).show();
+            addBlackDomain();
         } else if (id == R.id.action_remove) {
             Toast.makeText(getActivity(), "remove", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public boolean isSelected() {
+        return mSelected;
+    }
+
+    private void addBlackDomain() {
+        final int DP_MARGIN = 16;
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+        final LinearLayout layout = new LinearLayout(getActivity());
+        final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        layout.setOrientation(LinearLayout.VERTICAL);
+        params.setMargins(SkyNetUtils.dp2px(getActivity(), DP_MARGIN), 0, SkyNetUtils.dp2px(getActivity(), DP_MARGIN), 0);
+        final EditText editText = new EditText(getActivity());
+        layout.addView(editText, params);
+
+        SkyNetUtils.popSoftInput(getActivity(), editText);
+        //build dialog
+        builder.setTitle("添加拦截黑名单")
+                .setView(layout)
+                .setPositiveButton("添加", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .show();
     }
 }

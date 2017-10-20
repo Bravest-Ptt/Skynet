@@ -1,8 +1,5 @@
 package bravest.ptt.skynet.core.dns;
 
-/**
- * Created by zengzheying on 15/12/28.
- */
 public class DnsFlag {
 
     /**

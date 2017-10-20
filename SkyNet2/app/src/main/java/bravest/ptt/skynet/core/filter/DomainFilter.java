@@ -1,8 +1,7 @@
 package bravest.ptt.skynet.core.filter;
 
 /**
- * Created by zengzheying on 16/1/6.
- * 针对域名的过滤
+ * 针域名的过滤
  */
 public interface DomainFilter {
 
